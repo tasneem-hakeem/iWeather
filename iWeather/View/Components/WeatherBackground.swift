@@ -8,10 +8,22 @@
 import SwiftUI
 
 enum TimeOfDay {
-    case morning
-    case evening
+    case morning   // 5:00 AM – 5:59 PM
+    case evening   // 6:00 PM – 4:59 AM  
 
-    static var current: TimeOfDay {
+    static func from(localtime: String) -> TimeOfDay {
+
+        let parts = localtime.split(separator: " ")
+        guard parts.count == 2 else { return .fromDeviceClock() }
+        let timePart = String(parts[1])
+        let components = timePart.split(separator: ":")
+        guard let hour = components.first.flatMap({ Int($0) }) else {
+            return .fromDeviceClock()
+        }
+        return (hour >= 5 && hour < 18) ? .morning : .evening
+    }
+
+    static func fromDeviceClock() -> TimeOfDay {
         let hour = Calendar.current.component(.hour, from: Date())
         return (hour >= 5 && hour < 18) ? .morning : .evening
     }
@@ -24,20 +36,20 @@ enum TimeOfDay {
     }
 }
 
-
 struct WeatherBackground: View {
 
+    var timeOfDay: TimeOfDay
+
     var body: some View {
-        let time = TimeOfDay.current
         ZStack {
-            if UIImage(named: backgroundName(time)) != nil {
-                Image(backgroundName(time))
+            if UIImage(named: backgroundName) != nil {
+                Image(backgroundName)
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
             } else {
                 LinearGradient(
-                    gradient: Gradient(colors: gradientColors(time)),
+                    gradient: Gradient(colors: gradientColors),
                     startPoint: .top,
                     endPoint: .bottom
                 )
@@ -46,12 +58,12 @@ struct WeatherBackground: View {
         }
     }
 
-    private func backgroundName(_ time: TimeOfDay) -> String {
-        time == .morning ? "morning_bg" : "evening_bg"
+    private var backgroundName: String {
+        timeOfDay == .morning ? "morning_bg" : "evening_bg"
     }
 
-    private func gradientColors(_ time: TimeOfDay) -> [Color] {
-        switch time {
+    private var gradientColors: [Color] {
+        switch timeOfDay {
         case .morning:
             return [
                 Color(red: 0.53, green: 0.81, blue: 0.98),
@@ -69,6 +81,6 @@ struct WeatherBackground: View {
 
 struct WeatherBackground_Previews: PreviewProvider {
     static var previews: some View {
-        WeatherBackground()
+        WeatherBackground(timeOfDay: .evening)
     }
 }

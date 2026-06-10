@@ -70,6 +70,7 @@ struct SearchView: View {
                         if !locationStore.savedLocations.isEmpty {
                             Section(header: Text("Saved Locations")) {
                                 ForEach(locationStore.savedLocations) { loc in
+                                    
                                     let detailVM = WeatherViewModel(query: loc.query)
                                     NavigationLink(
                                         destination: WeatherDetailView(
@@ -124,7 +125,8 @@ struct SearchResultCard: View {
             Button(action: onAdd) {
                 Label("Add", systemImage: "plus.circle.fill")
                     .font(.system(size: 15, weight: .semibold))
-            }            .buttonStyle(BorderlessButtonStyle())
+            }
+            .buttonStyle(BorderlessButtonStyle())
         }
         .padding()
         .background(Color(UIColor.secondarySystemBackground))
@@ -139,7 +141,7 @@ struct WeatherDetailView: View {
 
     var body: some View {
         ZStack {
-            WeatherBackground()
+            WeatherBackground(timeOfDay: vm.timeOfDay)
 
             if vm.isLoading {
                 ProgressView()

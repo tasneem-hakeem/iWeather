@@ -20,7 +20,7 @@ struct HourlyForecastView: View {
 
     var body: some View {
         ZStack {
-            WeatherBackground()
+            WeatherBackground(timeOfDay: timeOfDay)
 
             ScrollView {
                 LazyVStack(spacing: 0) {
@@ -42,27 +42,20 @@ struct HourlyForecastView: View {
                 .padding(.bottom, 40)
             }
         }
-        .navigationBarTitle(
-            DateHelper.dayLabel(
-                for: forecastDay.date,
-                index: dayIndex
-            ),
-            displayMode: .inline
-        )
+        .navigationBarTitle(dayLabel, displayMode: .inline)
         .navigationBarColor(textColor)
     }
 
-    private var dayIndex: Int {
+    private var dayLabel: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
-        let today = formatter.string(from: Date())
-        guard let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date()) else {
-            return 2
-        }
-        let tomorrowStr = formatter.string(from: tomorrow)
-        if forecastDay.date == today { return 0 }
-        if forecastDay.date == tomorrowStr { return 1 }
-        return 2
+        let today     = formatter.string(from: Date())
+        let tomorrow  = formatter.string(
+            from: Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date()
+        )
+        if forecastDay.date == today    { return "Today" }
+        if forecastDay.date == tomorrow { return "Tomorrow" }
+        return DateHelper.dayLabel(for: forecastDay.date, index: 2)
     }
 }
 
@@ -111,19 +104,14 @@ extension View {
 
 struct NavigationBarColorModifier: ViewModifier {
     let color: Color
-
     func body(content: Content) -> some View {
-        content
-            .onAppear {
-                let uiColor = UIColor(color)
-                UINavigationBar.appearance().titleTextAttributes = [
-                    .foregroundColor: uiColor
-                ]
-                UINavigationBar.appearance().tintColor = uiColor
-            }
+        content.onAppear {
+            let uiColor = UIColor(color)
+            UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: uiColor]
+            UINavigationBar.appearance().tintColor = uiColor
+        }
     }
 }
-
 
 struct HourlyForecastView_Previews: PreviewProvider {
 

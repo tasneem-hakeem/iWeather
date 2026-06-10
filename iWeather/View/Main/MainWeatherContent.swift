@@ -4,15 +4,14 @@
 //
 //  Created by Tasneem Hakeem on 06/06/2026.
 //
-
 import SwiftUI
 
 struct MainWeatherContent: View {
 
     @ObservedObject var vm: WeatherViewModel
 
-    private var time: TimeOfDay { TimeOfDay.current }
-    private var textColor: Color { time.foregroundColor }
+    private var timeOfDay: TimeOfDay { vm.timeOfDay }
+    private var textColor: Color     { timeOfDay.foregroundColor }
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -57,7 +56,7 @@ struct MainWeatherContent: View {
                         NavigationLink(
                             destination: HourlyForecastView(
                                 forecastDay: day,
-                                timeOfDay: time
+                                timeOfDay: timeOfDay
                             )
                         ) {
                             ForecastRowView(
@@ -80,15 +79,14 @@ struct MainWeatherContent: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 20)
 
-                
                 VStack(spacing: 12) {
                     HStack(spacing: 12) {
-                        StatTileView(label: "Visibility", value: vm.visibility,   textColor: textColor)
-                        StatTileView(label: "Humidity",   value: vm.humidity,     textColor: textColor)
+                        StatTileView(label: "Visibility", value: vm.visibility, textColor: textColor)
+                        StatTileView(label: "Humidity",   value: vm.humidity,   textColor: textColor)
                     }
                     HStack(spacing: 12) {
-                        StatTileView(label: "Feels Like", value: vm.feelsLike,   textColor: textColor)
-                        StatTileView(label: "Pressure",   value: vm.pressure,    textColor: textColor)
+                        StatTileView(label: "Feels Like", value: vm.feelsLike,  textColor: textColor)
+                        StatTileView(label: "Pressure",   value: vm.pressure,   textColor: textColor)
                     }
                 }
                 .padding(.horizontal, 16)

@@ -11,24 +11,21 @@ struct ContentView: View {
 
     @StateObject private var vm = WeatherViewModel()
 
-    private var time: TimeOfDay { TimeOfDay.current }
-    private var textColor: Color { time.foregroundColor }
-
     var body: some View {
         NavigationView {
             ZStack {
-                WeatherBackground()
+                WeatherBackground(timeOfDay: vm.timeOfDay)
 
                 Group {
                     if vm.isLoading {
                         VStack(spacing: 16) {
                             ProgressView()
                                 .progressViewStyle(
-                                    CircularProgressViewStyle(tint: textColor)
+                                    CircularProgressViewStyle(tint: vm.timeOfDay.foregroundColor)
                                 )
                                 .scaleEffect(1.5)
                             Text("Fetching weather...")
-                                .foregroundColor(textColor)
+                                .foregroundColor(vm.timeOfDay.foregroundColor)
                         }
 
                     } else if vm.weatherResponse != nil {
@@ -38,15 +35,15 @@ struct ContentView: View {
                         VStack(spacing: 20) {
                             Image(systemName: "exclamationmark.icloud.fill")
                                 .font(.system(size: 50))
-                                .foregroundColor(textColor.opacity(0.6))
+                                .foregroundColor(vm.timeOfDay.foregroundColor.opacity(0.6))
                             Text(err)
                                 .multilineTextAlignment(.center)
-                                .foregroundColor(textColor)
+                                .foregroundColor(vm.timeOfDay.foregroundColor)
                                 .padding(.horizontal, 32)
                             Button("Retry") {
                                 vm.fetchWeatherForCurrentLocation()
                             }
-                            .foregroundColor(textColor)
+                            .foregroundColor(vm.timeOfDay.foregroundColor)
                             .padding(.horizontal, 24)
                             .padding(.vertical, 10)
                             .background(Color.white.opacity(0.2))
@@ -55,16 +52,11 @@ struct ContentView: View {
                     }
                 }
             }
-            .navigationBarHidden(true)   
+            .navigationBarHidden(true)
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .onAppear {
             vm.fetchWeatherForCurrentLocation()
         }
-    }
-}
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
     }
 }
