@@ -16,12 +16,17 @@ final class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
 
     private let service: WeatherServiceProtocol
     private let locationManager = CLLocationManager()
-
+    
     init(service: WeatherServiceProtocol = WeatherService()) {
         self.service = service
         super.init()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+    }
+
+    convenience init(query: String, service: WeatherServiceProtocol = WeatherService()) {
+        self.init(service: service)
+        fetch(query: query)
     }
 
     func fetchWeatherForCurrentLocation() {
@@ -35,7 +40,7 @@ final class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
             fetch(query: "30.0715495,31.0215953")
         }
     }
-
+    
     func fetch(query: String) {
         isLoading    = true
         errorMessage = nil
@@ -60,7 +65,6 @@ final class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
 
     func locationManager(_ manager: CLLocationManager,
                          didFailWithError error: Error) {
-
         fetch(query: "30.0715495,31.0215953")
     }
 

@@ -12,9 +12,6 @@ struct SearchView: View {
     @ObservedObject var locationStore: LocationStore
     @StateObject private var vm = SearchViewModel()
 
-    @State private var selectedLocation: SavedLocation?
-    @State private var navigateToDetail = false
-
     var body: some View {
         NavigationView {
             ZStack {
@@ -69,15 +66,15 @@ struct SearchView: View {
                             .padding(.horizontal, 16)
                     }
 
-
                     List {
                         if !locationStore.savedLocations.isEmpty {
                             Section(header: Text("Saved Locations")) {
                                 ForEach(locationStore.savedLocations) { loc in
+                                    let detailVM = WeatherViewModel(query: loc.query)
                                     NavigationLink(
                                         destination: WeatherDetailView(
-                                            query: loc.query,
-                                            title: loc.name
+                                            title: loc.name,
+                                            vm: detailVM
                                         )
                                     ) {
                                         HStack {
@@ -127,8 +124,7 @@ struct SearchResultCard: View {
             Button(action: onAdd) {
                 Label("Add", systemImage: "plus.circle.fill")
                     .font(.system(size: 15, weight: .semibold))
-            }
-            .buttonStyle(BorderlessButtonStyle())
+            }            .buttonStyle(BorderlessButtonStyle())
         }
         .padding()
         .background(Color(UIColor.secondarySystemBackground))
@@ -136,12 +132,10 @@ struct SearchResultCard: View {
     }
 }
 
-
 struct WeatherDetailView: View {
-    let query: String
-    let title: String
 
-    @StateObject private var vm = WeatherViewModel()
+    let title: String
+    @ObservedObject var vm: WeatherViewModel
 
     var body: some View {
         ZStack {
@@ -151,7 +145,7 @@ struct WeatherDetailView: View {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle(tint: .white))
                     .scaleEffect(1.5)
-            } else if let _ = vm.weatherResponse {
+            } else if vm.weatherResponse != nil {
                 MainWeatherContent(vm: vm)
             } else if let err = vm.errorMessage {
                 Text(err)
@@ -161,13 +155,5 @@ struct WeatherDetailView: View {
             }
         }
         .navigationBarTitle(title, displayMode: .inline)
-        .onAppear { vm.fetch(query: query) }
-    }
-}
-
-
-struct SearchView_Previews: PreviewProvider {
-    static var previews: some View {
-        SearchView(locationStore: LocationStore())
     }
 }
