@@ -13,13 +13,18 @@ struct SearchView: View {
     @StateObject private var searchVM = SearchViewModel()
     @StateObject private var locationsVM = SavedLocationsViewModel()
 
-    private var timeOfDay: TimeOfDay { TimeOfDay.fromDeviceClock() }
-    private var textColor: Color     { timeOfDay.foregroundColor }
-
+    @State private var showDeleteAlert = false
+    @State private var offsetsToDelete: IndexSet?
+    
+    //private var timeOfDay: TimeOfDay { TimeOfDay.fromDeviceClock() }
+    private var textColor: Color { .white }
+    private var backgroundColor: Color {
+        Color(red: 0.357, green: 0.400, blue: 0.478)
+    }
     var body: some View {
             ZStack {
 
-                timeOfDay.backgroundColor.ignoresSafeArea()
+                backgroundColor.ignoresSafeArea()
 
                 VStack(spacing: 0) {
 
@@ -98,8 +103,8 @@ struct SearchView: View {
                                     .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
                                 }
                                 .onDelete { offsets in
-                                    locationStore.remove(at: offsets)
-                                    locationsVM.sync(with: locationStore.savedLocations)
+                                    offsetsToDelete = offsets
+                                    showDeleteAlert = true
                                 }
                             }
                         } else {
@@ -112,8 +117,26 @@ struct SearchView: View {
                         }
                     }
                     .listStyle(InsetGroupedListStyle())
-
-                    .onAppear { UITableView.appearance().backgroundColor = .clear }
+                    .alert(isPresented: $showDeleteAlert) {
+                        Alert(
+                            title: Text("Delete Location"),
+                            message: Text("Are you sure you want to delete this saved location?"),
+                            primaryButton: .destructive(Text("Delete")) {
+                                if let offsets = offsetsToDelete {
+                                    locationStore.remove(at: offsets)
+                                    locationsVM.sync(with: locationStore.savedLocations)
+                                }
+                                offsetsToDelete = nil
+                            },
+                            secondaryButton: .cancel {
+                                offsetsToDelete = nil
+                            }
+                        )
+                    }
+                    .onAppear {
+                        UITableView.appearance().backgroundColor = .clear
+                        UITableView.appearance().separatorStyle = .none
+                    }
                 }
             }
             .navigationTitle("Locations")
