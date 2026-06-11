@@ -135,47 +135,72 @@ struct SearchView: View {
     }
 
     private var savedLocationsList: some View {
-        List {
-            if !locationStore.savedLocations.isEmpty {
-                Section(header:
-                    Text("Saved Locations")
-                        .foregroundColor(textColor.opacity(0.7))
+        Group {
+            if locationStore.savedLocations.isEmpty {
+                Spacer()
+
+                VStack(spacing: 12) {
+                    Image(systemName: "location.slash")
+                        .font(.system(size: 40))
+                        .foregroundColor(textColor.opacity(0.5))
+
+                    Text("No saved locations yet")
+                        .font(.headline)
+                        .foregroundColor(.black)
+
+                    Text("Search for a city and tap Add")
                         .font(.footnote)
-                        .fontWeight(.semibold)
-                        .tracking(1.2)
-                ) {
-                    ForEach(locationStore.savedLocations) { loc in
-                        let detailVM = locationsVM.viewModel(for: loc)
-                        NavigationLink(
-                            destination: WeatherDetailView(
-                                title: loc.name,
-                                vm: detailVM
+                        .foregroundColor(textColor.opacity(0.7))
+                }
+
+                Spacer()
+            } else {
+                List {
+                    Section(
+                        header:
+                            Text("Saved Locations")
+                            .foregroundColor(textColor.opacity(0.7))
+                            .font(.footnote)
+                            .fontWeight(.semibold)
+                            .tracking(1.2)
+                    ) {
+                        ForEach(locationStore.savedLocations) { loc in
+                            let detailVM = locationsVM.viewModel(for: loc)
+
+                            NavigationLink(
+                                destination: WeatherDetailView(
+                                    title: loc.name,
+                                    vm: detailVM
+                                )
+                            ) {
+                                SavedLocationCard(
+                                    vm: detailVM,
+                                    locationName: loc.name
+                                )
+                            }
+                            .listRowBackground(Color.clear)
+                            .listRowInsets(
+                                EdgeInsets(
+                                    top: 6,
+                                    leading: 16,
+                                    bottom: 6,
+                                    trailing: 16
+                                )
                             )
-                        ) {
-                            SavedLocationCard(vm: detailVM, locationName: loc.name)
                         }
-                        .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
-                    }
-                    .onDelete { offsets in
-                        offsetsToDelete = offsets
-                        showDeleteAlert = true
+                        .onDelete { offsets in
+                            offsetsToDelete = offsets
+                            showDeleteAlert = true
+                        }
                     }
                 }
-            } else {
-                Text("No saved locations yet.\nSearch for a city and tap Add.")
-                    .font(.footnote)
-                    .foregroundColor(textColor.opacity(0.7))
-                    .multilineTextAlignment(.center)
-                    .padding()
-                    .listRowBackground(Color.clear)
+                .listStyle(PlainListStyle())
+                .background(Color.clear)
+                .onAppear {
+                    UITableView.appearance().backgroundColor = .clear
+                    UITableViewCell.appearance().backgroundColor = .clear
+                }
             }
-        }
-        .listStyle(PlainListStyle())
-        .background(Color.clear)
-        .onAppear {
-            UITableView.appearance().backgroundColor = .clear
-            UITableView.appearance().separatorStyle = .none
         }
     }
 }
