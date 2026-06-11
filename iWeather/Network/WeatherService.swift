@@ -28,6 +28,10 @@ enum NetworkError: Error, LocalizedError {
 protocol WeatherServiceProtocol {
     func fetchWeather(query: String,
                       completion: @escaping (Result<WeatherResponse, NetworkError>) -> Void)
+    
+    func searchLocations(query: String,
+                         completion: @escaping (Result<[LocationSuggestion], NetworkError>) -> Void)
+
 }
 
 final class WeatherService: WeatherServiceProtocol {
@@ -79,5 +83,34 @@ final class WeatherService: WeatherServiceProtocol {
             }
         }
         task.resume()
+    }
+    
+    func searchLocations(query: String,
+                         completion: @escaping (Result<[LocationSuggestion], NetworkError>) -> Void) {
+        var components = URLComponents(string: "https://api.weatherapi.com/v1/search.json")
+        components?.queryItems = [
+            URLQueryItem(name: "key", value: apiKey),
+            URLQueryItem(name: "q", value: query)
+        ]
+        guard let url = components?.url else {
+            completion(.failure(.invalidURL))
+            return
+        }
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                DispatchQueue.main.async { completion(.failure(.unknown(error))) }
+                return
+            }
+            guard let data = data else {
+                DispatchQueue.main.async { completion(.failure(.noData)) }
+                return
+            }
+            do {
+                let decoded = try JSONDecoder().decode([LocationSuggestion].self, from: data)
+                DispatchQueue.main.async { completion(.success(decoded)) }
+            } catch {
+                DispatchQueue.main.async { completion(.failure(.decodingFailed(error))) }
+            }
+        }.resume()
     }
 }
