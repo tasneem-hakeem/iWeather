@@ -20,8 +20,8 @@ final class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
     init(service: WeatherServiceProtocol = WeatherService()) {
         self.service = service
         super.init()
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+        //locationManager.delegate = self
+        //locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
     }
 
     convenience init(query: String, service: WeatherServiceProtocol = WeatherService()) {
@@ -30,6 +30,9 @@ final class WeatherViewModel: NSObject, ObservableObject, CLLocationManagerDeleg
     }
 
     func fetchWeatherForCurrentLocation() {
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+
         let status = CLLocationManager.authorizationStatus()
         switch status {
         case .authorizedWhenInUse, .authorizedAlways:

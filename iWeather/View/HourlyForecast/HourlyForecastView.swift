@@ -42,6 +42,7 @@ struct HourlyForecastView: View {
             }
         }
         .navigationBarTitle(dayLabel, displayMode: .inline)
+        .navigationBarHidden(false)
         .navigationBarColor(textColor)
     }
 
@@ -106,12 +107,17 @@ struct NavigationBarColorModifier: ViewModifier {
     func body(content: Content) -> some View {
         content.onAppear {
             let uiColor = UIColor(color)
-            UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: uiColor]
-            UINavigationBar.appearance().tintColor = uiColor
+            
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithTransparentBackground()
+            appearance.titleTextAttributes = [.foregroundColor: uiColor]
+            
+            UINavigationBar.appearance().standardAppearance = appearance
+            UINavigationBar.appearance().scrollEdgeAppearance = appearance
+            UINavigationBar.appearance().tintColor = uiColor  
         }
     }
 }
-
 struct HourlyForecastView_Previews: PreviewProvider {
 
     static let mockForecastDay = ForecastDay(

@@ -52,7 +52,8 @@ struct ContentView: View {
                     }
                 }
             }
-            .navigationBarHidden(true)
+            .onAppear  { UINavigationBar.appearance().isHidden = true  }
+            .onDisappear { UINavigationBar.appearance().isHidden = false }
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .onAppear {

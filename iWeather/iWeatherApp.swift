@@ -9,21 +9,26 @@ import SwiftUI
 
 @main
 struct iWeatherApp: App {
-
     @StateObject private var locationStore = LocationStore()
 
     var body: some Scene {
         WindowGroup {
             TabView {
-                ContentView()
-                    .tabItem {
-                        Label("Weather", systemImage: "cloud.sun.fill")
-                    }
+                NavigationView {
+                    ContentView()
+                }
+                .navigationViewStyle(StackNavigationViewStyle())
+                .tabItem {
+                    Label("Weather", systemImage: "cloud.sun.fill")
+                }
 
-                SearchView(locationStore: locationStore)
-                    .tabItem {
-                        Label("Locations", systemImage: "map.fill")
-                    }
+                NavigationView {          
+                    SearchView(locationStore: locationStore)
+                }
+                .navigationViewStyle(StackNavigationViewStyle())
+                .tabItem {
+                    Label("Locations", systemImage: "map.fill")
+                }
             }
         }
     }

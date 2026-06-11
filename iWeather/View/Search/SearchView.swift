@@ -17,7 +17,6 @@ struct SearchView: View {
     private var textColor: Color     { timeOfDay.foregroundColor }
 
     var body: some View {
-        NavigationView {
             ZStack {
 
                 timeOfDay.backgroundColor.ignoresSafeArea()
@@ -130,7 +129,6 @@ struct SearchView: View {
                 ]
             }
         }
-    }
 }
 
 struct SearchResultCard: View {
