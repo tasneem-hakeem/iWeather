@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3DB6F6652FDA32F900E5ABCB /* SavedLocationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB6F6642FDA32F900E5ABCB /* SavedLocationsViewModel.swift */; };
 		3DCCB7AC2FD48CFA001491C0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCCB7AB2FD48CFA001491C0 /* AppDelegate.swift */; };
 		3DCCB7B02FD48CFA001491C0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCCB7AF2FD48CFA001491C0 /* ContentView.swift */; };
 		3DCCB7B32FD48CFA001491C0 /* iWeather.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3DCCB7B12FD48CFA001491C0 /* iWeather.xcdatamodeld */; };
@@ -30,6 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3DB6F6642FDA32F900E5ABCB /* SavedLocationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedLocationsViewModel.swift; sourceTree = "<group>"; };
 		3DCCB7A82FD48CFA001491C0 /* iWeather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iWeather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DCCB7AB2FD48CFA001491C0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3DCCB7AF2FD48CFA001491C0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -138,6 +140,7 @@
 			children = (
 				3DCCB7D02FD4C2A7001491C0 /* SearchViewModel.swift */,
 				3DCCB7D22FD4C31D001491C0 /* WeatherViewModel.swift */,
+				3DB6F6642FDA32F900E5ABCB /* SavedLocationsViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -268,6 +271,7 @@
 				3DCCB7B02FD48CFA001491C0 /* ContentView.swift in Sources */,
 				3DCCB7CE2FD4C276001491C0 /* LocationStore.swift in Sources */,
 				3DCCB7D32FD4C31D001491C0 /* WeatherViewModel.swift in Sources */,
+				3DB6F6652FDA32F900E5ABCB /* SavedLocationsViewModel.swift in Sources */,
 				3DCCB7DD2FD4C791001491C0 /* WeatherBackground.swift in Sources */,
 				3DCCB7C92FD4C1B5001491C0 /* WeatherService.swift in Sources */,
 				3DCCB7E82FD4D34B001491C0 /* iWeatherApp.swift in Sources */,
